@@ -1,16 +1,27 @@
 package com.example.duoc.myapplication;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+
+import static com.example.duoc.myapplication.ToDoDbHelper.*;
 
 public class MainActivity extends Activity {
+
+    private String[] asd ={TAREA_NOMBRE,TAREA_IMAGEN};
 
     private static final int REQUEST_CODE = 1;
     private Bitmap bitmap;
@@ -65,5 +76,44 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static String BitmapToString(Bitmap bitmap) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+            String temp = Base64.encodeToString(b, Base64.DEFAULT);
+            return temp;
+        } catch (NullPointerException e) {
+            return null;
+        } catch (OutOfMemoryError e) {
+            return null;
+        }
+}
+    public void guardarProducto(View view){
+        //recuperacion valores de controles
+        String Nombre = ((EditText)findViewById(R.id.Nombre)).getText().toString();
+        String imgTemp =BitmapToString(bitmap);
+
+
+
+
+        //codigo SQLite
+        ToDoDbHelper toDoDbHelper = new ToDoDbHelper(this);
+        SQLiteDatabase db = toDoDbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TAREA_NOMBRE, Nombre);
+        cv.put(TAREA_IMAGEN,imgTemp);
+
+
+        //nombre de la tabla, nullhack, valores
+        db.insert(TAREA_TABLE, null, cv);
+
+        //notifica la creacion con un TOAST
+        Toast.makeText(this, "Producto Guardado", Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, ListarDatos.class);
+        startActivity(intent);
     }
 }

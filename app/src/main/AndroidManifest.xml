@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.duoc.myapplication" >
-    <uses-feature android:name="android.hardware.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +17,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ListarDatos"
+            android:label="@string/title_activity_listar_datos" >
         </activity>
     </application>
 
